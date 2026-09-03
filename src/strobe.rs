@@ -23,7 +23,7 @@ fn transmute_state(st: &mut AlignedKeccakState) -> &mut [u64; 25] {
 /// (since u64 words must be 8-byte aligned)
 #[derive(Clone, Zeroize)]
 #[zeroize(drop)]
-#[repr(align(8))]
+#[repr(C, align(8))]
 struct AlignedKeccakState([u8; 200]);
 
 /// A Strobe context for the 128-bit security level.
@@ -178,7 +178,17 @@ impl DerefMut for AlignedKeccakState {
 
 #[cfg(test)]
 mod tests {
+    use core::mem::{align_of, size_of};
+
     use strobe_rs::{self, SecParam};
+
+    use super::AlignedKeccakState;
+
+    #[test]
+    fn keccak_state_layout_matches_words() {
+        assert_eq!(size_of::<AlignedKeccakState>(), size_of::<[u64; 25]>());
+        assert!(align_of::<AlignedKeccakState>() >= align_of::<[u64; 25]>());
+    }
 
     #[test]
     fn test_conformance() {
