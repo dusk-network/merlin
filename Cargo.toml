@@ -6,20 +6,17 @@ name = "merlin"
 # - update README if required by semver
 version = "3.0.0"
 authors = ["Henry de Valence <hdevalence@hdevalence.ca>"]
-edition = "2018"
+edition = "2024"
+rust-version = "1.96.1"
 readme = "README.md"
 license = "MIT"
-repository = "https://github.com/zkcrypto/merlin"
+repository = "https://github.com/dusk-network/merlin"
 homepage = "https://docs.rs/merlin"
 documentation = "https://docs.rs/merlin"
 categories = ["cryptography"]
 keywords = ["cryptography", "zero-knowledge", "fiat-shamir", "transcript"]
 description = "Composable proof transcripts for public-coin arguments of knowledge"
 exclude = [".travis.yml", ".gitignore"]
-
-[package.metadata.docs.rs]
-# We need nightly to build docs
-features = ["nightly"]
 
 [dependencies]
 keccak = { version = "0.1.0", default-features = false }
@@ -35,6 +32,5 @@ rand_chacha = "0.3"
 
 [features]
 default = ["std"]
-nightly = []
-debug-transcript = ["hex"]
+debug-transcript = ["hex", "std"]
 std = ["rand_core/std", "byteorder/std"]
