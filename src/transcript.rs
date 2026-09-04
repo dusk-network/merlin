@@ -3,21 +3,12 @@ use zeroize::Zeroize;
 use crate::strobe::Strobe128;
 
 fn encode_u64(x: u64) -> [u8; 8] {
-    use byteorder::{ByteOrder, LittleEndian};
-
-    let mut buf = [0; 8];
-    LittleEndian::write_u64(&mut buf, x);
-    buf
+    x.to_le_bytes()
 }
 
 fn encode_usize_as_u32(x: usize) -> [u8; 4] {
-    use byteorder::{ByteOrder, LittleEndian};
-
     assert!(x <= (u32::MAX as usize));
-
-    let mut buf = [0; 4];
-    LittleEndian::write_u32(&mut buf, x as u32);
-    buf
+    (x as u32).to_le_bytes()
 }
 
 /// A transcript of a public-coin argument.
@@ -471,9 +462,8 @@ mod tests {
 
     #[test]
     fn transcript_rng_is_bound_to_transcript_and_witnesses() {
-        use curve25519_dalek::scalar::Scalar;
         use rand_chacha::ChaChaRng;
-        use rand_core::SeedableRng;
+        use rand_core::{RngCore, SeedableRng};
 
         // Check that the TranscriptRng is bound to the transcript and
         // the witnesses.  This is done by producing a sequence of
@@ -516,10 +506,14 @@ mod tests {
             .rekey_with_witness_bytes(b"witness", witness2)
             .finalize(&mut ChaChaRng::from_seed([0; 32]));
 
-        let s1 = Scalar::random(&mut r1);
-        let s2 = Scalar::random(&mut r2);
-        let s3 = Scalar::random(&mut r3);
-        let s4 = Scalar::random(&mut r4);
+        let mut s1 = [0; 32];
+        let mut s2 = [0; 32];
+        let mut s3 = [0; 32];
+        let mut s4 = [0; 32];
+        r1.fill_bytes(&mut s1);
+        r2.fill_bytes(&mut s2);
+        r3.fill_bytes(&mut s3);
+        r4.fill_bytes(&mut s4);
 
         // Transcript t1 has different commitments than t2, t3, t4, so
         // it should produce distinct challenges from all of them.

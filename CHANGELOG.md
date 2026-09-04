@@ -8,6 +8,8 @@
 * Remove the obsolete `nightly` feature and make `debug-transcript` explicitly
   require `std` [#2].
 * Define the Keccak state layout and accept borrowed transcript labels [#3].
+* Remove unnecessary dependencies and update the debugging and reference-test
+  dependencies [#4].
 
 ## 3.0.0
 
@@ -82,3 +84,4 @@
 <!-- ISSUES -->
 [#2]: https://github.com/dusk-network/merlin/issues/2
 [#3]: https://github.com/dusk-network/merlin/issues/3
+[#4]: https://github.com/dusk-network/merlin/issues/4
