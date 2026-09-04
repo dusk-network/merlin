@@ -146,3 +146,36 @@ fn long_witness_output_matches_merlin_3_0_0() {
         ]
     );
 }
+
+#[test]
+fn borrowed_labels_match_static_labels() {
+    let protocol = b"borrowed-label protocol".to_vec();
+    let message_label = b"borrowed-message".to_vec();
+    let challenge_label = b"borrowed-challenge".to_vec();
+    let witness_label = b"borrowed-witness".to_vec();
+
+    let mut borrowed = Transcript::new(&protocol);
+    borrowed.append_message(&message_label, b"message");
+    let mut static_labels = Transcript::new(b"borrowed-label protocol");
+    static_labels.append_message(b"borrowed-message", b"message");
+
+    let mut borrowed_challenge = [0; 32];
+    let mut static_challenge = [0; 32];
+    borrowed.challenge_bytes(&challenge_label, &mut borrowed_challenge);
+    static_labels.challenge_bytes(b"borrowed-challenge", &mut static_challenge);
+    assert_eq!(borrowed_challenge, static_challenge);
+
+    let mut borrowed_rng = borrowed
+        .build_rng()
+        .rekey_with_witness_bytes(&witness_label, b"witness")
+        .finalize(&mut FixedRng(0));
+    let mut static_rng = static_labels
+        .build_rng()
+        .rekey_with_witness_bytes(b"borrowed-witness", b"witness")
+        .finalize(&mut FixedRng(0));
+    let mut borrowed_output = [0; 32];
+    let mut static_output = [0; 32];
+    borrowed_rng.fill_bytes(&mut borrowed_output);
+    static_rng.fill_bytes(&mut static_output);
+    assert_eq!(borrowed_output, static_output);
+}

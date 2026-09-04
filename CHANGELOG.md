@@ -7,6 +7,7 @@
 * Require Rust 1.96.1 and Rust 2024 [#2].
 * Remove the obsolete `nightly` feature and make `debug-transcript` explicitly
   require `std` [#2].
+* Define the Keccak state layout and accept borrowed transcript labels [#3].
 
 ## 3.0.0
 
@@ -80,3 +81,4 @@
 
 <!-- ISSUES -->
 [#2]: https://github.com/dusk-network/merlin/issues/2
+[#3]: https://github.com/dusk-network/merlin/issues/3
