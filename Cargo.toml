@@ -1,5 +1,5 @@
 [package]
-name = "merlin"
+name = "dusk-merlin"
 # Before incrementing:
 # - update CHANGELOG
 # - update html_root_url
@@ -11,12 +11,15 @@ rust-version = "1.96.1"
 readme = "README.md"
 license = "MIT"
 repository = "https://github.com/dusk-network/merlin"
-homepage = "https://docs.rs/merlin"
-documentation = "https://docs.rs/merlin"
+homepage = "https://github.com/dusk-network/merlin"
+documentation = "https://docs.rs/dusk-merlin"
 categories = ["cryptography"]
 keywords = ["cryptography", "zero-knowledge", "fiat-shamir", "transcript"]
 description = "Composable proof transcripts for public-coin arguments of knowledge"
-exclude = [".travis.yml", ".gitignore"]
+exclude = [".gitignore"]
+
+[lib]
+name = "merlin"
 
 [dependencies]
 keccak = { version = "0.1.0", default-features = false }

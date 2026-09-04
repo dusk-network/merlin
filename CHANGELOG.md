@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+* Continue Merlin 3.0.0 as the Dusk-maintained `dusk-merlin` crate on Rust
+  2024, with stable tooling and fixed compatibility vectors [#2].
+
 ## 3.0.0
 
 * Update `rand_core` to `0.6`.  Because traits from `rand_core` are part of the
@@ -70,3 +75,5 @@
 
 * Initial prototype version.
 
+<!-- ISSUES -->
+[#2]: https://github.com/dusk-network/merlin/issues/2

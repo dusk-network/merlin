@@ -1,6 +1,6 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 #![doc = include_str!("../README.md")]
-#![doc(html_root_url = "https://docs.rs/merlin/3.0.0")]
+#![doc(html_root_url = "https://docs.rs/dusk-merlin/3.0.0")]
 
 #[cfg(target_endian = "big")]
 compile_error!(
