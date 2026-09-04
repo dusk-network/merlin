@@ -43,6 +43,8 @@ prover's witness data, and an auxiliary input from an external RNG.
 More details on the design of Merlin and how to use it for proof
 systems can be found on the [Merlin website][merlin_cool].
 
+## Features
+
 The `debug-transcript` feature prints an annotated proof transcript to
 `stdout`; it is only suitable for development and testing purposes,
 should not be used in released crates, and should not be considered stable.

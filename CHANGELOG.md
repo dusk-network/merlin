@@ -2,8 +2,11 @@
 
 ## Unreleased
 
-* Continue Merlin 3.0.0 as the Dusk-maintained `dusk-merlin` crate on Rust
-  2024, with stable tooling and fixed compatibility vectors [#2].
+* Continue Merlin 3.0.0 as the Dusk-maintained `dusk-merlin` crate while
+  preserving the `merlin` library target [#2].
+* Require Rust 1.96.1 and Rust 2024 [#2].
+* Remove the obsolete `nightly` feature and make `debug-transcript` explicitly
+  require `std` [#2].
 
 ## 3.0.0
 
