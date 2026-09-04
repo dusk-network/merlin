@@ -2,6 +2,15 @@
  width="33%"
  align="right"
  src="https://merlin.cool/merlin.png"/>
+
+This is the Dusk Network-maintained fork of Merlin 3.0.0. It preserves
+Merlin's transcript construction and output compatibility while keeping the
+Rust implementation maintained for Dusk's cryptographic stack.
+
+Dusk relies on Merlin across its proof systems. Upstream has not published a
+release since 2021, so this fork provides a maintained path for toolchain,
+dependency and security updates. Fixed upstream vectors guard the Merlin 3.0
+transcript and transcript-RNG compatibility boundary.
  
 ## Merlin: composable proof transcripts for public-coin arguments of knowledge
 
@@ -35,10 +44,6 @@ More details on the design of Merlin and how to use it for proof
 systems can be found on the [Merlin website][merlin_cool].
 
 ## Features
-
-The `nightly` feature is passed to `clear_on_drop`; it may be replaced
-with a no-op in the future (since `clear_on_drop` is an implementation
-detail).
 
 The `debug-transcript` feature prints an annotated proof transcript to
 `stdout`; it is only suitable for development and testing purposes,

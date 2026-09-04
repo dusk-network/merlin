@@ -1,24 +1,14 @@
-use rand_core;
 use zeroize::Zeroize;
 
 use crate::strobe::Strobe128;
 
 fn encode_u64(x: u64) -> [u8; 8] {
-    use byteorder::{ByteOrder, LittleEndian};
-
-    let mut buf = [0; 8];
-    LittleEndian::write_u64(&mut buf, x);
-    buf
+    x.to_le_bytes()
 }
 
 fn encode_usize_as_u32(x: usize) -> [u8; 4] {
-    use byteorder::{ByteOrder, LittleEndian};
-
-    assert!(x <= (u32::max_value() as usize));
-
-    let mut buf = [0; 4];
-    LittleEndian::write_u32(&mut buf, x as u32);
-    buf
+    assert!(x <= (u32::MAX as usize));
+    (x as u32).to_le_bytes()
 }
 
 /// A transcript of a public-coin argument.
@@ -66,7 +56,7 @@ impl Transcript {
     /// **not by the proof implementation**.  See the [Passing
     /// Transcripts](https://merlin.cool/use/passing.html) section of
     /// the Merlin website for more details on why.
-    pub fn new(label: &'static [u8]) -> Transcript {
+    pub fn new(label: &[u8]) -> Transcript {
         use crate::constants::MERLIN_PROTOCOL_LABEL;
 
         #[cfg(feature = "debug-transcript")]
@@ -93,7 +83,7 @@ impl Transcript {
     /// also appended to the transcript.  See the [Transcript
     /// Protocols](https://merlin.cool/use/protocol.html) section of
     /// the Merlin website for details on labels.
-    pub fn append_message(&mut self, label: &'static [u8], message: &[u8]) {
+    pub fn append_message(&mut self, label: &[u8], message: &[u8]) {
         let data_len = encode_usize_as_u32(message.len());
         self.strobe.meta_ad(label, false);
         self.strobe.meta_ad(&data_len, true);
@@ -137,7 +127,7 @@ impl Transcript {
     /// This is intended to avoid any possible confusion between the
     /// transcript-level messages and protocol-level commitments.
     #[deprecated(since = "1.1.0", note = "renamed to append_message for clarity.")]
-    pub fn commit_bytes(&mut self, label: &'static [u8], message: &[u8]) {
+    pub fn commit_bytes(&mut self, label: &[u8], message: &[u8]) {
         self.append_message(label, message);
     }
 
@@ -152,7 +142,7 @@ impl Transcript {
     ///
     /// Calls `append_message` with the 8-byte little-endian encoding
     /// of `x`.
-    pub fn append_u64(&mut self, label: &'static [u8], x: u64) {
+    pub fn append_u64(&mut self, label: &[u8], x: u64) {
         self.append_message(label, &encode_u64(x));
     }
 
@@ -162,7 +152,7 @@ impl Transcript {
     /// This is intended to avoid any possible confusion between the
     /// transcript-level messages and protocol-level commitments.
     #[deprecated(since = "1.1.0", note = "renamed to append_u64 for clarity.")]
-    pub fn commit_u64(&mut self, label: &'static [u8], x: u64) {
+    pub fn commit_u64(&mut self, label: &[u8], x: u64) {
         self.append_u64(label, x);
     }
 
@@ -172,7 +162,7 @@ impl Transcript {
     /// also appended to the transcript.  See the [Transcript
     /// Protocols](https://merlin.cool/use/protocol.html) section of
     /// the Merlin website for details on labels.
-    pub fn challenge_bytes(&mut self, label: &'static [u8], dest: &mut [u8]) {
+    pub fn challenge_bytes(&mut self, label: &[u8], dest: &mut [u8]) {
         let data_len = encode_usize_as_u32(dest.len());
         self.strobe.meta_ad(label, false);
         self.strobe.meta_ad(&data_len, true);
@@ -288,7 +278,7 @@ impl TranscriptRngBuilder {
     /// The `label` parameter is metadata about `witness`.
     pub fn rekey_with_witness_bytes(
         mut self,
-        label: &'static [u8],
+        label: &[u8],
         witness: &[u8],
     ) -> TranscriptRngBuilder {
         let witness_len = encode_usize_as_u32(witness.len());
@@ -300,7 +290,7 @@ impl TranscriptRngBuilder {
     }
 
     /// Deprecated.  This function was renamed to
-    /// [`rekey_with_witness_bytes`](Transcript::rekey_with_witness_bytes).
+    /// [`rekey_with_witness_bytes`](TranscriptRngBuilder::rekey_with_witness_bytes).
     ///
     /// This is intended to avoid any possible confusion between the
     /// transcript-level messages and protocol-level commitments.
@@ -308,11 +298,7 @@ impl TranscriptRngBuilder {
         since = "1.1.0",
         note = "renamed to rekey_with_witness_bytes for clarity."
     )]
-    pub fn commit_witness_bytes(
-        self,
-        label: &'static [u8],
-        witness: &[u8],
-    ) -> TranscriptRngBuilder {
+    pub fn commit_witness_bytes(self, label: &[u8], witness: &[u8]) -> TranscriptRngBuilder {
         self.rekey_with_witness_bytes(label, witness)
     }
 
@@ -409,7 +395,7 @@ mod tests {
             metadata.extend_from_slice(&encode_usize_as_u32(message.len()));
 
             self.state.meta_ad(&metadata, false);
-            self.state.ad(&message, false);
+            self.state.ad(message, false);
         }
 
         /// Strobe op: meta-AD(label || len(dest)); PRF into challenge_bytes
@@ -476,9 +462,8 @@ mod tests {
 
     #[test]
     fn transcript_rng_is_bound_to_transcript_and_witnesses() {
-        use curve25519_dalek::scalar::Scalar;
         use rand_chacha::ChaChaRng;
-        use rand_core::SeedableRng;
+        use rand_core::{RngCore, SeedableRng};
 
         // Check that the TranscriptRng is bound to the transcript and
         // the witnesses.  This is done by producing a sequence of
@@ -521,10 +506,14 @@ mod tests {
             .rekey_with_witness_bytes(b"witness", witness2)
             .finalize(&mut ChaChaRng::from_seed([0; 32]));
 
-        let s1 = Scalar::random(&mut r1);
-        let s2 = Scalar::random(&mut r2);
-        let s3 = Scalar::random(&mut r3);
-        let s4 = Scalar::random(&mut r4);
+        let mut s1 = [0; 32];
+        let mut s2 = [0; 32];
+        let mut s3 = [0; 32];
+        let mut s4 = [0; 32];
+        r1.fill_bytes(&mut s1);
+        r2.fill_bytes(&mut s2);
+        r3.fill_bytes(&mut s3);
+        r4.fill_bytes(&mut s4);
 
         // Transcript t1 has different commitments than t2, t3, t4, so
         // it should produce distinct challenges from all of them.
