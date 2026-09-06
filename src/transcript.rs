@@ -1,4 +1,4 @@
-use zeroize::Zeroize;
+use zeroize::{Zeroize, Zeroizing};
 
 use crate::strobe::Strobe128;
 
@@ -310,14 +310,12 @@ impl TranscriptRngBuilder {
     where
         R: rand_core::RngCore + rand_core::CryptoRng,
     {
-        let random_bytes = {
-            let mut bytes = [0u8; 32];
-            rng.fill_bytes(&mut bytes);
-            bytes
-        };
+        // Wrap before filling so an unwinding RNG also wipes partial output.
+        let mut random_bytes = Zeroizing::new([0u8; 32]);
+        rng.fill_bytes(&mut random_bytes[..]);
 
         self.strobe.meta_ad(b"rng", false);
-        self.strobe.key(&random_bytes, false);
+        self.strobe.key(&random_bytes[..], false);
 
         TranscriptRng {
             strobe: self.strobe,

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Zeroize temporary transcript-RNG entropy on drop, including during
+  unwinding, without changing transcript or RNG outputs [#11].
 * Continue Merlin 3.0.0 as the Dusk-maintained `dusk-merlin` crate while
   preserving the `merlin` library target [#2].
 * Require Rust 1.96.1 and Rust 2024 [#2].
@@ -87,3 +89,4 @@
 [#3]: https://github.com/dusk-network/merlin/issues/3
 [#4]: https://github.com/dusk-network/merlin/issues/4
 [#5]: https://github.com/dusk-network/merlin/issues/5
+[#11]: https://github.com/dusk-network/merlin/issues/11
