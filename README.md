@@ -43,6 +43,25 @@ prover's witness data, and an auxiliary input from an external RNG.
 More details on the design of Merlin and how to use it for proof
 systems can be found on the [Merlin website][merlin_cool].
 
+## Migrating from Merlin 3.0
+
+Dusk Merlin 4.0.0 retains Merlin 3.0 transcript and transcript-RNG outputs.
+The major version marks package/build compatibility changes, not a new
+cryptographic protocol.
+
+```toml
+[dependencies]
+merlin = { package = "dusk-merlin", version = "4.0.0" }
+```
+
+- Use Rust 1.96.1 or newer; this crate uses Rust 2024.
+- Remove the obsolete `nightly` feature from dependency declarations.
+- Keep `use merlin::Transcript`; the Rust library target is still `merlin`.
+- Public RNG traits remain on `rand_core` 0.6.
+- For `no_std`, disable default features. `debug-transcript` explicitly
+  enables `std` and remains unsuitable for production.
+- Little-endian-only support and the `Merlin v1.0` protocol label are unchanged.
+
 ## Features
 
 The `debug-transcript` feature prints an annotated proof transcript to

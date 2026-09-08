@@ -4,7 +4,7 @@ name = "dusk-merlin"
 # - update CHANGELOG
 # - update html_root_url
 # - update README if required by semver
-version = "3.0.0"
+version = "4.0.0"
 authors = ["Henry de Valence <hdevalence@hdevalence.ca>"]
 edition = "2024"
 rust-version = "1.96.1"

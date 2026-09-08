@@ -2,8 +2,17 @@
 
 ## Unreleased
 
+## 4.0.0
+
+This major release changes the package/build compatibility boundary, not the
+Merlin 3.0 transcript or transcript-RNG construction. When migrating, select
+`dusk-merlin`, use Rust 1.96.1 or newer, and remove the `nightly` feature from
+dependency declarations. The Rust library target remains `merlin` [#2].
+
 * Zeroize temporary transcript-RNG entropy on drop, including during
   unwinding, without changing transcript or RNG outputs [#11].
+* Document maintenance commands and upstream compatibility-vector provenance
+  and regeneration [#9].
 * Continue Merlin 3.0.0 as the Dusk-maintained `dusk-merlin` crate while
   preserving the `merlin` library target [#2].
 * Require Rust 1.96.1 and Rust 2024 [#2].
@@ -89,4 +98,5 @@
 [#3]: https://github.com/dusk-network/merlin/issues/3
 [#4]: https://github.com/dusk-network/merlin/issues/4
 [#5]: https://github.com/dusk-network/merlin/issues/5
+[#9]: https://github.com/dusk-network/merlin/issues/9
 [#11]: https://github.com/dusk-network/merlin/issues/11
