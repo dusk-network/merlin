@@ -125,14 +125,19 @@ A mismatch requires investigation, not replacement of the compatibility
 boundary. Keep new coverage separate from intentional protocol changes; the
 latter require an explicit downstream compatibility decision.
 
-## Git and Changelog
+## Git
 
 - Branch from `main`; do not push directly to it.
 - Follow recent commit style: `docs: ...`, `fix: ...`, `test: ...`, `chore: ...`.
 - Keep each commit scoped to one concern. Separate dependency upgrades,
   behavior changes, and unrelated documentation or cleanup.
-- Update `CHANGELOG.md` under `Unreleased` for behavior, public API,
-  dependency, or toolchain/support changes. Link the issue using the existing
-  reference style. Documentation-only changes do not need a release entry.
 - Do not bump versions, tag releases, or publish packages without explicit
   authorization.
+
+## Changelog
+
+Update `CHANGELOG.md` under `[Unreleased]` for user-visible changes only. Exclude tests, CI, tooling, and refactors.
+
+- One fact per entry. Name the public item and behavior, including the affected released item if breaking. Leave implementation, rationale, consequences, and migration to the linked issue.
+- Use existing `Added`, `Changed`, or `Removed` sections. Use `Fixed` only for released bugs. Correct unreleased bugs in their original entry.
+- Link only the GitHub issue, not the PR. Match existing link style and define references below. Preserve other entries and follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and Markdown blank-line spacing.
